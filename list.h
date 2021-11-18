@@ -10,9 +10,9 @@ public:
     Element(int idOfMan = 0, string nameOfMan = "None", Element* nextMan = nullptr) : id(idOfMan), name(nameOfMan), next(nextMan) {};
     Element* getNext() { return next; }
     void setNext(Element* next) { this->next = next; };
-    friend ostream& operator << (ostream& stream, const Element* element);
     ~Element();
-
+    int getId() { return id; };
+    string getName() { return name; };
 private:
 
     int id;
@@ -24,26 +24,24 @@ private:
 class List
 {
 public:
-    List() : next(NULL) {};
-    List(Element* nextElement) : next(nextElement) {};
-    ~List() { delete this; };
-    Element* getElement() { return next; };
-    friend ostream& operator << (ostream& stream, const Element* element);
-    void setElement(Element* newMan) { this->next = newMan; };
-    void pushBack(Element* newMan);
-    void pushFront(Element* newMan);
+    List() : firstElement(nullptr) {};
+    List(Element* nextElement) : firstElement(nextElement) {};
+    ~List();
+    Element* getElement() { return firstElement; };
+    friend ostream& operator << (ostream& stream, const List* list);
+    void setElement(Element* newMan) { this->firstElement = newMan; };
+    void pushBack(int idOfMan, string nameOfMan);
+    void pushFront(int idOfMan, string nameOfMan);
     void popBack();
     void popFront();
-    void insert(Element* newMan, int position);
+    void insert(int idOfMan, string nameOfMan, int position);
     void insert(List* list, int position);
     Element* at(int position);
     void remove(int position);
     int getSize();
     void clear();
-    void set(Element* newMan, int position);
+    void set(int idOfMan, string nameOfMan, int position);
     bool isEmpty();
 private:
-    Element* next;
+    Element* firstElement;
 };
-
-void showAllList(Element* e1);

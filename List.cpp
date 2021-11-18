@@ -1,24 +1,44 @@
 #include "list.h"
 
-ostream& operator << (ostream& stream, const Element* element)
+ostream& operator << (ostream& stream, const List* list)
 {
-	stream << "id: " << element->id << "\nname: " << element->name << endl;
+	Element* man = list->firstElement;
+	if (man != nullptr)
+		while (man != nullptr)
+		{
+			stream << "id: " << man->getId() << "\nName: " << man->getName() << endl;
+			man = man->getNext();
+		}
+	else stream << "Empty";
 	return stream;
 };
 
-void List::pushBack(Element* newMan)
+void List::pushBack(int idOfMan, string nameOfMan)
 {
-	Element* cur = this->getElement();
-	while (cur->getNext() != NULL)
-		cur = cur->getNext();
-	cur->setNext(newMan);
+	Element* newMan = new Element(idOfMan, nameOfMan);
+	if (this->getSize() != 0)
+	{
+		Element* cur = this->getElement();
+		while (cur->getNext() != NULL)
+			cur = cur->getNext();
+		cur->setNext(newMan);
+	}
+	else
+		this->setElement(newMan);
+
 }
 
-void List::pushFront(Element* newMan)
+void List::pushFront(int idOfMan, string nameOfMan)
 {
-	Element* tmp = this->getElement();
-	this->setElement(newMan);
-	newMan->setNext(tmp);
+	Element* newMan = new Element(idOfMan, nameOfMan);
+	if (this->getSize() != 0)
+	{
+		Element* tmp = this->getElement();
+		this->setElement(newMan);
+		newMan->setNext(tmp);
+	}
+	else
+		this->setElement(newMan);
 }
 
 void List::popBack()
@@ -34,11 +54,6 @@ void List::popBack()
 		delete cur;
 		prev->setNext(NULL);
 	}
-	else
-	{
-		delete this->getElement();
-		this->setElement(NULL);
-	}
 }
 
 void List::popFront()
@@ -48,12 +63,13 @@ void List::popFront()
 	delete cur;
 }
 
-void List::insert(Element* newMan, int position)
+void List::insert(int idOfMan, string nameOfMan, int position)
 {
-	if (position == 1) pushFront(newMan);
+	if (position == 1) pushFront(idOfMan, nameOfMan);
 	else
 	{
 		Element* cur = this->getElement();
+		Element* newMan = new Element(idOfMan, nameOfMan);
 		for (int i = 0; i < position - 1; i++)
 			cur = cur->getNext();
 		newMan->setNext(cur->getNext());
@@ -101,18 +117,22 @@ void List::remove(int position)
 int List::getSize()
 {
 	Element* cur = this->getElement();
-	int len = 1;
-	while (cur->getNext() != NULL)
+	int len = 0;
+	if (cur != nullptr)
 	{
-		cur = cur->getNext();
 		len++;
+		while (cur->getNext() != NULL)
+		{
+			cur = cur->getNext();
+			len++;
+		}
 	}
 	return len;
 }
 
 void List::clear()
 {
-	Element* cur = this->getElement(), *next = cur->getNext();
+	Element* cur = this->getElement(), * next = cur->getNext();
 	this->setElement(NULL);
 	while (cur != NULL && next != NULL)
 	{
@@ -123,17 +143,18 @@ void List::clear()
 	delete cur;
 }
 
-void List::set(Element* newMan, int position)
+void List::set(int idOfMan, string nameOfMan, int position)
 {
 	if (position == 1)
 	{
 		popFront();
-		pushFront(newMan);
+		pushFront(idOfMan, nameOfMan);
 	}
 	else
 	{
-		Element* cur = this->getElement(), *tmp;
-		for (int i = 0; i < position-1; i++)
+		Element* cur = this->getElement(), * tmp;
+		Element* newMan = new Element(idOfMan, nameOfMan);
+		for (int i = 0; i < position - 1; i++)
 			cur = cur->getNext();
 		newMan->setNext(cur->getNext()->getNext());
 		tmp = cur->getNext();
@@ -151,15 +172,13 @@ bool List::isEmpty()
 
 Element::~Element()
 {
-	delete this;
+	id = 0;
+	name = "";
+	next = nullptr;
 }
 
-void showAllList(Element* e1)
+List::~List()
 {
-	Element* e2 = e1;
-	while (e2 != nullptr)
-	{
-		cout << e2;
-		e2 = e2->getNext();
-	}
+	firstElement = nullptr;
+	delete this;
 }
